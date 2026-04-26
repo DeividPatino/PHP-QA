@@ -30,36 +30,24 @@ src/
 			Port/                        # Puertos (interfaces)
 			Mapper/                      # Mapper de respuesta
 	Infrastructure/
-		Persistence/PDO/
 		User/Mapper/
 		User/Repository/
 
 database/
-	schema.sql                       # Script SQL
+	schema.sqlite.sql                # Script SQL (SQLite)
 ```
 
 ## Requisitos
 
 - PHP 8.1+
-- MySQL 8+
+- SQLite (incluido via PDO en PHP)
 
 ## Base de datos
 
-1. Ejecuta el script:
+La base SQLite se crea automaticamente en `database/php_qa.sqlite` al primer arranque.
 
-```sql
-database/schema.sql
-```
-
-2. Configura variables de entorno (tomando `.env.example` como base):
-
-```bash
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_NAME=php_qa
-DB_USER=root
-DB_PASSWORD=
-```
+Si deseas recrear la base, borra el archivo `database/php_qa.sqlite` y reinicia el servidor.
+El esquema usado esta en [database/schema.sqlite.sql](database/schema.sqlite.sql).
 
 ## Ejecutar
 
@@ -68,6 +56,22 @@ Desde la raíz del proyecto:
 ```bash
 php -S localhost:8000 -t public
 ```
+
+## Video
+
+
+- https://www.youtube.com/watch?v=Cgr2HsrQuNY
+
+## Interfaz web basica (PHP puro)
+
+Rutas web disponibles:
+
+- Registro: `index.php?route=register`
+- Login: `index.php?route=login`
+- Mi perfil: `index.php?route=profile`
+- Usuarios (solo ADMIN): `index.php?route=users`
+
+La interfaz usa sesiones (`$_SESSION`) para login y roles, y muestra mensajes flash.
 
 ## Pruebas rapidas
 
@@ -184,7 +188,7 @@ Archivos de prueba incluidos:
 
 - El dominio no depende de infraestructura.
 - Los casos de uso dependen de puertos, no de implementaciones concretas.
-- `PdoUserRepository` es un adaptador de infraestructura.
+- `SqliteUserRepository` es el adaptador de infraestructura usado actualmente.
 - Se usan `prepared statements` para consultas SQL seguras.
 - `EmailServicePort` define el contrato de email en Aplicacion.
 - `Infrastructure/Email/EmailService` implementa el envio con `mail()` y fallback a log en `var/email.log`.

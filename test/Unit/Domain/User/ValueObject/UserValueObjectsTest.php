@@ -72,10 +72,10 @@ final class UserValueObjectsTest extends TestCase
         UserPassword::fromPlain('Abc123');
     }
 
-    public function test_user_password_rejects_plain_text_without_uppercase_or_number(): void
+    public function test_user_password_accepts_plain_text_without_uppercase_or_number(): void
     {
-        $this->expectException(InvalidUserPasswordException::class);
+        $password = UserPassword::fromPlain('alllowercase');
 
-        UserPassword::fromPlain('alllowercase');
+        $this->assertTrue($password->matches('alllowercase'));
     }
 }

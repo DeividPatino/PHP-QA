@@ -10,9 +10,8 @@ use App\Application\User\Service\ListUsersService;
 use App\Application\User\Service\LoginUserService;
 use App\Application\User\Service\UpdateUserService;
 use App\Infrastructure\Email\EmailService;
-use App\Infrastructure\Persistence\PDO\PDOConnectionFactory;
 use App\Infrastructure\User\Mapper\UserPdoMapper;
-use App\Infrastructure\User\Repository\PdoUserRepository;
+use App\Infrastructure\User\Repository\SqliteUserRepository;
 
 spl_autoload_register(static function (string $class): void {
     $prefix = 'App\\';
@@ -30,16 +29,22 @@ spl_autoload_register(static function (string $class): void {
     }
 });
 
-$config = [
-    'host' => getenv('DB_HOST') ?: '127.0.0.1',
-    'port' => getenv('DB_PORT') ?: '3306',
-    'dbname' => getenv('DB_NAME') ?: 'php_qa',
-    'user' => getenv('DB_USER') ?: 'root',
-    'password' => getenv('DB_PASSWORD') ?: '',
-];
+$dbPath = __DIR__ . '/../database/php_qa.sqlite';
+$dbExists = file_exists($dbPath);
 
-$pdo = PDOConnectionFactory::create($config);
-$userRepository = new PdoUserRepository($pdo, new UserPdoMapper());
+$pdo = new PDO('sqlite:' . $dbPath);
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+if (!$dbExists) {
+    try {
+        $schema = file_get_contents(__DIR__ . '/../database/schema.sqlite.sql');
+        $pdo->exec($schema);
+    } catch (PDOException $e) {
+        die('Could not initialize database schema: ' . $e->getMessage());
+    }
+}
+
+$userRepository = new SqliteUserRepository($pdo, new UserPdoMapper());
 $emailService = new EmailService();
 
 return [

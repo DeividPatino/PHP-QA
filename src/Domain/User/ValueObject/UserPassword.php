@@ -21,10 +21,6 @@ final class UserPassword
             throw new InvalidUserPasswordException('Password must have at least 8 characters.');
         }
 
-        if (!preg_match('/[A-Z]/', $plainPassword) || !preg_match('/[0-9]/', $plainPassword)) {
-            throw new InvalidUserPasswordException('Password must include at least one uppercase letter and one number.');
-        }
-
         $hash = password_hash($plainPassword, PASSWORD_BCRYPT);
 
         if ($hash === false) {

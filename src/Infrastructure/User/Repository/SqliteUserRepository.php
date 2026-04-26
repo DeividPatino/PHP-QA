@@ -9,7 +9,7 @@ use App\Domain\User\Entity\UserModel;
 use App\Infrastructure\User\Mapper\UserPdoMapper;
 use PDO;
 
-final class PdoUserRepository implements UserRepositoryPort
+final class SqliteUserRepository implements UserRepositoryPort
 {
     public function __construct(
         private readonly PDO $connection,
@@ -33,7 +33,14 @@ final class PdoUserRepository implements UserRepositoryPort
         $row = $this->mapper->toRow($user);
 
         $statement = $this->connection->prepare(
-            'UPDATE users SET name = :name, email = :email, password = :password, role = :role, status = :status WHERE id = :id'
+            "UPDATE users SET 
+                name = :name, 
+                email = :email, 
+                password = :password, 
+                role = :role, 
+                status = :status, 
+                updated_at = (datetime('now', 'localtime'))
+             WHERE id = :id"
         );
 
         $statement->execute($row);
