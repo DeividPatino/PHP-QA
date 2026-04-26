@@ -12,10 +12,10 @@ Proyecto educativo en PHP para practicar:
 
 ```text
 public/
-	index.php                        # Entrypoint y routing (?route=)
+	index.php                        
 
 src/
-	bootstrap.php                    # Wiring de dependencias
+	bootstrap.php                    
 	Domain/
 		User/
 			Entity/
@@ -24,23 +24,23 @@ src/
 			ValueObject/
 	Application/
 		User/
-			Command/                     # CQRS Commands
-			Query/                       # CQRS Queries
-			Service/                     # Casos de uso
-			Port/                        # Puertos (interfaces)
-			Mapper/                      # Mapper de respuesta
+			Command/                    
+			Query/                     
+			Service/                   
+			Port/                      
+			Mapper/                      
 	Infrastructure/
 		User/Mapper/
 		User/Repository/
 
 database/
-	schema.sqlite.sql                # Script SQL (SQLite)
+	schema.sqlite.sql               
 ```
 
 ## Requisitos
 
 - PHP 8.1+
-- SQLite (incluido via PDO en PHP)
+- SQLite 
 
 ## Base de datos
 
@@ -59,8 +59,7 @@ php -S localhost:8000 -t public
 
 ## Video
 
-
-- https://www.youtube.com/watch?v=Cgr2HsrQuNY
+[![Vista previa del video](https://img.youtube.com/vi/Cgr2HsrQuNY/hqdefault.jpg)](https://www.youtube.com/watch?v=Cgr2HsrQuNY)
 
 ## Interfaz web basica (PHP puro)
 
@@ -183,13 +182,3 @@ Archivos de prueba incluidos:
 	"password": "StrongPass1"
 }
 ```
-
-## Notas de diseño
-
-- El dominio no depende de infraestructura.
-- Los casos de uso dependen de puertos, no de implementaciones concretas.
-- `SqliteUserRepository` es el adaptador de infraestructura usado actualmente.
-- Se usan `prepared statements` para consultas SQL seguras.
-- `EmailServicePort` define el contrato de email en Aplicacion.
-- `Infrastructure/Email/EmailService` implementa el envio con `mail()` y fallback a log en `var/email.log`.
-- `CreateUserService` envia correo de bienvenida despues de guardar el usuario.
